@@ -25,8 +25,8 @@ public class LSTM {
         List<String> sequence = ctext.getSequence();
         
         for (int i = 0; i < 100; i++) {
-            if (i > 0 && i % 10 == 0) {
-                lr /= 2;
+            if (i > 0 && i % 20 == 0) {
+                //lr /= 2;
             }
             double error = 0;
             double num = 0;
@@ -69,7 +69,7 @@ public class LSTM {
 
     public static void main(String[] args) {
         int hiddenSize = 100;
-        double lr = 2;
+        double lr = 1;
         CharText ct = new CharText();
         LSTM lstm = new LSTM(ct.getCharIndex().size(), hiddenSize, new MatIniter(Type.Uniform, 0.1, 0, 0));
         lstm.train(ct, lr);
