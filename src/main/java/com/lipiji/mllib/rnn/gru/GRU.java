@@ -142,7 +142,7 @@ public class GRU implements Serializable {
             acts.put("dr" + t, deltaR);
             
             // update gates
-            DoubleMatrix deltaZ = DoubleMatrix.ones(1, z.columns).sub(deltaH.mul(gh)).add(deltaH.mul(preH)).mul(deriveExp(z));
+            DoubleMatrix deltaZ = deltaH.mul(preH.sub(gh)).mul(deriveExp(z));
             acts.put("dz" + t, deltaZ);            
         }
         updateParameters(acts, lastT, lr);
