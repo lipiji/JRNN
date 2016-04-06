@@ -118,11 +118,12 @@ public class GRU implements Serializable {
                 DoubleMatrix lateDr = acts.get("dr" + (t + 1));
                 DoubleMatrix lateDz = acts.get("dz" + (t + 1));
                 DoubleMatrix lateR = acts.get("r" + (t + 1));
+                DoubleMatrix lateZ = acts.get("z" + (t + 1));
                 deltaH = Why.mmul(deltaY.transpose()).transpose()
                         .add(Whr.mmul(lateDr.transpose()).transpose())
                         .add(Whz.mmul(lateDz.transpose()).transpose())
                         .add(Whh.mmul(lateDgh.mul(lateR).transpose()).transpose())
-                        .add(lateDh.mul(z));
+                        .add(lateDh.mul(lateZ));
             }
             acts.put("dh" + t, deltaH);
             
