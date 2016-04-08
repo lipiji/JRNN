@@ -49,7 +49,7 @@ public class GRULM {
                     acts.put("y" + t, trueYt);
                     
                     System.out.print(indexChar.get(predcitYt.argmax()));
-                    error += LossFunction.getCrossEntropy(predcitYt, trueYt);
+                    error += LossFunction.getMeanCategoricalCrossEntropy(predcitYt, trueYt);
                     
                 }
                 

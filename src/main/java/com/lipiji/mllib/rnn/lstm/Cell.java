@@ -139,7 +139,6 @@ public class Cell implements Serializable {
     
     public void bptt(Map<String, DoubleMatrix> acts, int lastT, double lr) {
         for (int t = lastT; t > -1; t--) {
-            // model output errors:  error = -(y - py) dpy
             DoubleMatrix py = acts.get("py" + t);
             DoubleMatrix y = acts.get("y" + t);
             DoubleMatrix deltaY = py.sub(y);

@@ -96,11 +96,9 @@ public class GRU implements Serializable {
     
     public void bptt(Map<String, DoubleMatrix> acts, int lastT, double lr) {
         for (int t = lastT; t > -1; t--) {
-            // 1 /2 || y - py ||^2
-            // model output errors:  error = -(y - py) 
             DoubleMatrix py = acts.get("py" + t);
             DoubleMatrix y = acts.get("y" + t);
-            DoubleMatrix deltaY = py.sub(y);//.mul(deriveExp(py));
+            DoubleMatrix deltaY = py.sub(y);
             acts.put("dy" + t, deltaY);
             
             // cell output errors

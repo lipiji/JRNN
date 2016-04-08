@@ -19,11 +19,33 @@ public class LossFunction {
                 + (q.add(-1).mul(MatrixFunctions.log(p.mul(-1).add(1)))).sum();
     }
     
-    public static double getCrossEntropy(DoubleMatrix P, DoubleMatrix Q) {
+    public static double getMeanBinaryCrossEntropy(DoubleMatrix P, DoubleMatrix Q) {
         double e = 0;
         if (P.rows == Q.rows) {
             for (int i = 0; i < P.rows; i++) {
                 e += crossEntropy(P.getRow(i), Q.getRow(i));
+            }
+            e /= P.rows;
+        } else {
+            System.exit(-1);
+        }
+        return e;
+    }
+    
+    private static double getCategoricalCrossEntropy(DoubleMatrix p, DoubleMatrix q) {
+        for (int i = 0; i < q.length; i++) {
+            if (q.get(i) == 0) {
+                q.put(i, 1e-10);
+            }
+        }
+        return -p.mul(MatrixFunctions.log(q)).sum();
+    }
+    
+    public static double getMeanCategoricalCrossEntropy(DoubleMatrix P, DoubleMatrix Q) {
+        double e = 0;
+        if (P.rows == Q.rows) {
+            for (int i = 0; i < P.rows; i++) {
+                e += getCategoricalCrossEntropy(P.getRow(i), Q.getRow(i));
             }
             e /= P.rows;
         } else {
@@ -72,10 +94,5 @@ public class LossFunction {
             System.exit(-1);
         }
         return e;
-    }
-    
-    // -p / q + (1 - p) / (1 - q) 
-    public static DoubleMatrix deriveCrossEntropy(DoubleMatrix p, DoubleMatrix q) {
-        return p.mul(-1).div(p).add(p.mul(-1).add(1).div(q.mul(-1).add(1)));
     }
 }
