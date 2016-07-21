@@ -86,7 +86,7 @@ public class GRU implements Serializable {
         DoubleMatrix r = Activer.logistic(x.mmul(Wxr).add(preH.mmul(Whr)).add(br));
         DoubleMatrix z = Activer.logistic(x.mmul(Wxz).add(preH.mmul(Whz)).add(bz));
         DoubleMatrix gh = Activer.tanh(x.mmul(Wxh).add(r.mul(preH).mmul(Whh)).add(bh));
-        DoubleMatrix h = z.mul(preH).add((DoubleMatrix.ones(1, z.columns).sub(z)).mul(gh));
+        DoubleMatrix h = (DoubleMatrix.ones(1, z.columns).sub(z)).mul(preH).add(z.mul(gh));
         
         acts.put("r" + t, r);
         acts.put("z" + t, z);
@@ -121,12 +121,12 @@ public class GRU implements Serializable {
                         .add(Whr.mmul(lateDr.transpose()).transpose())
                         .add(Whz.mmul(lateDz.transpose()).transpose())
                         .add(Whh.mmul(lateDgh.mul(lateR).transpose()).transpose())
-                        .add(lateDh.mul(lateZ));
+                        .add(lateDh.mul(DoubleMatrix.ones(1, lateZ.columns).sub(lateZ)));
             }
             acts.put("dh" + t, deltaH);
             
             // gh
-            DoubleMatrix deltaGh = deltaH.mul(DoubleMatrix.ones(1, z.columns).sub(z)).mul(deriveTanh(gh));
+            DoubleMatrix deltaGh = deltaH.mul(z).mul(deriveTanh(gh));
             acts.put("dgh" + t, deltaGh);
             
             DoubleMatrix preH = null;
@@ -141,7 +141,7 @@ public class GRU implements Serializable {
             acts.put("dr" + t, deltaR);
             
             // update gates
-            DoubleMatrix deltaZ = deltaH.mul(preH.sub(gh)).mul(deriveExp(z));
+            DoubleMatrix deltaZ = deltaH.mul(gh.sub(preH)).mul(deriveExp(z));
             acts.put("dz" + t, deltaZ);            
         }
         updateParameters(acts, lastT, lr);
